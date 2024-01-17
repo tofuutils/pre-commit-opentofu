@@ -12,13 +12,19 @@ function main {
   common::parse_cmdline "$@"
   common::export_provided_env_vars "${ENV_VARS[@]}"
   common::parse_and_export_env_vars
+  # Support for setting PATH to repo root.
+  for i in "${!ARGS[@]}"; do
+    ARGS[i]=${ARGS[i]/__GIT_WORKING_DIR__/$(pwd)\/}
+  done
 
-  # Suppress terraform fmt color
+  # Suppress tfsec color
   if [ "$PRE_COMMIT_COLOR" = "never" ]; then
-    ARGS+=("-no-color")
+    ARGS+=("--no-color")
   fi
 
-  # shellcheck disable=SC2153 # False positive
+  common::colorify "yellow" "tfsec tool was deprecated, and replaced by trivy. You can check trivy hook here:"
+  common::colorify "yellow" "https://github.com/tofuutils/pre-commit-opentofu/tree/master#terraform_trivy"
+
   common::per_dir_hook "$HOOK_ID" "${#ARGS[@]}" "${ARGS[@]}" "${FILES[@]}"
 }
 
@@ -44,7 +50,24 @@ function per_dir_hook_unique_part {
   local -a -r args=("$@")
 
   # pass the arguments to hook
-  terraform fmt "${args[@]}"
+  tfsec "${args[@]}"
+
+  # return exit code to common::per_dir_hook
+  local exit_code=$?
+  return $exit_code
+}
+
+#######################################################################
+# Unique part of `common::per_dir_hook`. The function is executed one time
+# in the root git repo
+# Arguments:
+#   args (array) arguments that configure wrapped tool behavior
+#######################################################################
+function run_hook_on_whole_repo {
+  local -a -r args=("$@")
+
+  # pass the arguments to hook
+  tfsec "$(pwd)" "${args[@]}"
 
   # return exit code to common::per_dir_hook
   local exit_code=$?
