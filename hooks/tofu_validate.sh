@@ -111,7 +111,7 @@ function per_dir_hook_unique_part {
     esac
   done
 
-  # First try `terratofuform validate` with the hope that all deps are
+  # First try `tofu validate` with the hope that all deps are
   # pre-installed. That is needed for cases when `.terraform/modules`
   # or `.terraform/providers` missed AND that is expected.
   tofu validate "${args[@]}" &> /dev/null && {

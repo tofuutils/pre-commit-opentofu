@@ -276,19 +276,19 @@ There are several [pre-commit](https://pre-commit.com/) hooks to keep OpenTofu c
 | `checkov` and `tofu_checkov`                      | [checkov](https://github.com/bridgecrewio/checkov) static analysis of OpenTofu templates to spot potential security issues. [Hook notes](#checkov-deprecated-and-tofu_checkov)                                                         | `checkov`<br>Ubuntu deps: `python3`, `python3-pip`                                   |
 | `infracost_breakdown`                                  | Check how much your infra costs with [infracost](https://github.com/infracost/infracost). [Hook notes](#infracost_breakdown)                                                                                                                 | `infracost`, `jq`, [Infracost API key](https://www.infracost.io/docs/#2-get-api-key) |
 | `tofu_docs`                                       | Inserts input and output documentation into `README.md`. Recommended. [Hook notes](#terraform_docs)                                                                                                                                          | `terraform-docs`                                                                     |
-| `terraform_docs_replace`                               | Runs `terraform-docs` and pipes the output directly to README.md. **DEPRECATED**, see [#248](https://github.com/tofuutils/pre-commit-opentofu/issues/248). [Hook notes](#terraform_docs_replace-deprecated)                              | `python3`, `terraform-docs`                                                          |
-| `terraform_docs_without_`<br>`aggregate_type_defaults` | Inserts input and output documentation into `README.md` without aggregate type defaults. Hook notes same as for [tofu_docs](#terraform_docs)                                                                                            | `tofu-docs`                                                                     |
+| `tofu_docs_replace`                               | Runs `terraform-docs` and pipes the output directly to README.md. **DEPRECATED**. [Hook notes](#terraform_docs_replace-deprecated)                              | `python3`, `terraform-docs`                                                          |
+| `tofu_docs_without_`<br>`aggregate_type_defaults` | Inserts input and output documentation into `README.md` without aggregate type defaults. Hook notes same as for [tofu_docs](#terraform_docs)                                                                                            | `tofu-docs`                                                                     |
 | `tofu_fmt`                                        | Reformat all OpenTofu configuration files to a canonical format. [Hook notes](#terraform_fmt)                                                                                                                                               | -                                                                                    |
 | `tofu_providers_lock`                             | Updates provider signatures in [dependency lock files](https://www.terraform.io/docs/cli/commands/providers/lock.html). [Hook notes](#terraform_providers_lock)                                                                              | -                                                                                    |
 | `tofu_tflint`                                     | Validates all OpenTofu configuration files with [TFLint](https://github.com/terraform-linters/tflint). [Available TFLint rules](https://github.com/terraform-linters/tflint/tree/master/docs/rules#rules). [Hook notes](#terraform_tflint). | `tflint`                                                                             |
 | `tofu_tfsec`                                      | [TFSec](https://github.com/aquasecurity/tfsec) static analysis of terraform templates to spot potential security issues. **DEPRECATED**, use `tofu_trivy`. [Hook notes](#terraform_tfsec-deprecated)                                   | `tfsec`                                                                              |
-| `terraform_trivy`                                      | [Trivy](https://github.com/aquasecurity/trivy) static analysis of terraform templates to spot potential security issues. [Hook notes](#terraform_trivy)                                                                                      | `trivy`                                                                              |
+| `tofu_trivy`                                      | [Trivy](https://github.com/aquasecurity/trivy) static analysis of terraform templates to spot potential security issues. [Hook notes](#terraform_trivy)                                                                                      | `trivy`                                                                              |
 | `tofu_validate`                                   | Validates all Terraform configuration files. [Hook notes](#tofu_validate)                                                                                                                                                               | `jq`, only for `--retry-once-with-cleanup` flag                                      |
 | `terragrunt_fmt`                                       | Reformat all [Terragrunt](https://github.com/gruntwork-io/terragrunt) configuration files (`*.hcl`) to a canonical format.                                                                                                                   | `terragrunt`                                                                         |
 | `terragrunt_validate`                                  | Validates all [Terragrunt](https://github.com/gruntwork-io/terragrunt) configuration files (`*.hcl`)                                                                                                                                         | `terragrunt`                                                                         |
 | `tofu_wrapper_module_for_each`                    | Generates OpenTofu wrappers with `for_each` in module. [Hook notes](#terraform_wrapper_module_for_each)                                                                                                                                     | `hcledit`                                                                            |
 | `terrascan`                                            | [terrascan](https://github.com/tenable/terrascan) Detect compliance and security violations. [Hook notes](#terrascan)                                                                                                                        | `terrascan`                                                                          |
-| `tfupdate`                                             | [tfupdate](https://github.com/minamijoyo/tfupdate) Update version constraints of Terraform core, providers, and modules. [Hook notes](#tfupdate)                                                                                             | `tfupdate`                                                                           |
+| `tfupdate`                                             | [tfupdate](https://github.com/minamijoyo/tfupdate) Update version constraints of OpenTofu core, providers, and modules. [Hook notes](#tfupdate)                                                                                             | `tfupdate`                                                                           |
 <!-- markdownlint-enable no-inline-html -->
 
 Check the [source file](https://github.com/tofuutils/pre-commit-opentofu/blob/master/.pre-commit-hooks.yaml) to know arguments used for each hook.
@@ -297,7 +297,7 @@ Check the [source file](https://github.com/tofuutils/pre-commit-opentofu/blob/ma
 
 ### Known limitations
 
-OpenTOfu operates on a per-dir basis, while `pre-commit` framework only supports files and files that exist. This means if you only remove the TF-related file without any other changes in the same dir, checks will be skipped. Example and details [here](https://github.com/pre-commit/pre-commit/issues/3048).
+OpenTofu operates on a per-dir basis, while `pre-commit` framework only supports files and files that exist. This means if you only remove the TF-related file without any other changes in the same dir, checks will be skipped. Example and details [here](https://github.com/pre-commit/pre-commit/issues/3048).
 
 ### All hooks: Usage of environment variables in `--args`
 
@@ -371,17 +371,17 @@ For deprecated hook you need to specify each argument separately:
   ]
 ```
 
-2. When you have multiple directories and want to run `terraform_checkov` in all of them and share a single config file - use the `__GIT_WORKING_DIR__` placeholder. It will be replaced by `terraform_checkov` hooks with the Git working directory (repo root) at run time. For example:
+2. When you have multiple directories and want to run `tofu_checkov` in all of them and share a single config file - use the `__GIT_WORKING_DIR__` placeholder. It will be replaced by `tofu_checkov` hooks with the Git working directory (repo root) at run time. For example:
 
     ```yaml
-    - id: terraform_checkov
+    - id: tofu_checkov
       args:
         - --args=--config-file __GIT_WORKING_DIR__/.checkov.yml
     ```
 
 ### infracost_breakdown
 
-`infracost_breakdown` executes `infracost breakdown` command and compare the estimated costs with those specified in the hook-config. `infracost breakdown` parses Terraform HCL code, and calls Infracost Cloud Pricing API (remote version or [self-hosted version](https://www.infracost.io/docs/cloud_pricing_api/self_hosted)).
+`infracost_breakdown` executes `infracost breakdown` command and compare the estimated costs with those specified in the hook-config. `infracost breakdown` parses OpenTofu HCL code, and calls Infracost Cloud Pricing API (remote version or [self-hosted version](https://www.infracost.io/docs/cloud_pricing_api/self_hosted)).
 
 Unlike most other hooks, this hook triggers once if there are any changed files in the repository.
 
@@ -471,9 +471,9 @@ Unlike most other hooks, this hook triggers once if there are any changed files 
     * You need to provide [Infracost API key](https://www.infracost.io/docs/integrations/environment_variables/#infracost_api_key) via `-e INFRACOST_API_KEY=<your token>`. By default, it is saved in `~/.config/infracost/credentials.yml`
     * Set `-e INFRACOST_SKIP_UPDATE_CHECK=true` to [skip the Infracost update check](https://www.infracost.io/docs/integrations/environment_variables/#infracost_skip_update_check) if you use this hook as part of your CI/CD pipeline.
 
-### terraform_docs
+### tofu_docs
 
-1. `tofu_docs` and `terraform_docs_without_aggregate_type_defaults` will insert/update documentation generated by [terraform-docs](https://github.com/terraform-docs/terraform-docs) framed by markers:
+1. `tofu_docs` and `tofu_docs_without_aggregate_type_defaults` will insert/update documentation generated by [terraform-docs](https://github.com/terraform-docs/terraform-docs) framed by markers:
 
     ```txt
     <!-- BEGINNING OF PRE-COMMIT-OPENTOFU DOCS HOOK -->
@@ -689,7 +689,7 @@ To replicate functionality in `tofu_docs` hook:
         - --args=--config=__GIT_WORKING_DIR__/.tflint.hcl
     ```
 
-3. By default, pre-commit-opentofu performs directory switching into the terraform modules for you. If you want to delgate the directory changing to the binary - this will allow tflint to determine the full paths for error/warning messages, rather than just module relative paths. *Note: this requires `tflint>=0.44.0`.* For example:
+3. By default, pre-commit-opentofu performs directory switching into the OpenTofu modules for you. If you want to delgate the directory changing to the binary - this will allow tflint to determine the full paths for error/warning messages, rather than just module relative paths. *Note: this requires `tflint>=0.44.0`.* For example:
 
     ```yaml
     - id: tofu_tflint
@@ -861,7 +861,7 @@ To replicate functionality in `tofu_docs` hook:
 
     **Warning**: If you use OpenTofu workspaces, DO NOT use this option ([details](https://github.com/tofuutils/pre-commit-opentofu/issues/203#issuecomment-918791847)). Consider the first option, or wait for [`force-init`](https://github.com/tofuutils/pre-commit-opentofu/issues/224) option implementation.
 
-4. `tofu_validate` in a repo with TerrOpenTofuaform module, written using OpenTofu 1.6.0+ and which uses provider `configuration_aliases` ([Provider Aliases Within Modules](https://www.terraform.io/language/modules/develop/providers#provider-aliases-within-modules)), errors out.
+4. `tofu_validate` in a repo with OpenTofu module, written using OpenTofu 1.6.0+ and which uses provider `configuration_aliases` ([Provider Aliases Within Modules](https://www.terraform.io/language/modules/develop/providers#provider-aliases-within-modules)), errors out.
 
    When running the hook against OpenTofu code where you have provider `configuration_aliases` defined in a `required_providers` configuration block, OpenTofu will throw an error like:
 
