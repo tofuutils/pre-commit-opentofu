@@ -26,18 +26,17 @@ function main {
     ARGS[i]=${ARGS[i]/--config=/--config=$(pwd)\/}
   done
   # shellcheck disable=SC2153 # False positive
-  terraform_docs_ "${HOOK_CONFIG[*]}" "${ARGS[*]}" "${FILES[@]}"
+  tofu_check_ "${HOOK_CONFIG[*]}" "${ARGS[*]}" "${FILES[@]}"
 }
 
 #######################################################################
-# TODO Function which prepares hacks for old versions of `terraform` and
-# `terraform-docs` that them call `terraform_docs`
+# TODO Function which checks `terraform-docs` exists
 # Arguments:
 #   hook_config (string with array) arguments that configure hook behavior
 #   args (string with array) arguments that configure wrapped tool behavior
 #   files (array) filenames to check
 #######################################################################
-function tofu_docs_ {
+function tofu_check_ {
   local -r hook_config="$1"
   local -r args="$2"
   shift 2
@@ -46,40 +45,12 @@ function tofu_docs_ {
   # Get hook settings
   IFS=";" read -r -a configs <<< "$hook_config"
 
-  local hack_tofu_docs
-  hack_terraform_docs=$(tofu version | sed -n 1p | grep -c 0.12) || true
-
   if [[ ! $(command -v terraform-docs) ]]; then
-    echo "ERROR: terraform-docs is required by terraform_docs pre-commit hook but is not installed or in the system's PATH."
+    echo "ERROR: terraform-docs is required by tofu_docs pre-commit hook but is not installed or in the system's PATH."
     exit 1
   fi
 
-  local is_old_terraform_docs
-  is_old_terraform_docs=$(terraform-docs version | grep -o "v0.[1-7]\." | tail -1) || true
-
-  if [[ -z "$is_old_terraform_docs" ]]; then # Using terraform-docs 0.8+ (preferred)
-
-    terraform_docs "0" "${configs[*]}" "$args" "${files[@]}"
-
-  elif [[ "$hack_terraform_docs" == "1" ]]; then # Using awk script because terraform-docs is older than 0.8 and terraform 0.12 is used
-
-    if [[ ! $(command -v awk) ]]; then
-      # TODO: pls check it
-      echo "ERROR: awk is required for terraform-docs hack to work with Terraform 0.12."
-      exit 1
-    fi
-
-    local tmp_file_awk
-    tmp_file_awk=$(mktemp "${TMPDIR:-/tmp}/tofu-docs-XXXXXXXXXX")
-    tofu_docs_awk "$tmp_file_awk"
-    tofu_docs "$tmp_file_awk" "${configs[*]}" "$args" "${files[@]}"
-    rm -f "$tmp_file_awk"
-
-  else # Using terraform 0.11 and no awk script is needed for that
-    # TODO: should be deleted for OpenTofu.
-    tofu_docs "0" "${configs[*]}" "$args" "${files[@]}"
-
-  fi
+  tofu_docs "${configs[*]}" "${args[*]}" "${files[@]}"
 }
 
 #######################################################################
@@ -87,18 +58,14 @@ function tofu_docs_ {
 # (depends on provided hook_config) OpenTofu documentation in
 # markdown format
 # Arguments:
-#   terraform_docs_awk_file (string) filename where awk hack for old
-#     `terraform-docs` was written. Needed for TF 0.12+.
-#     Hack skipped when `tofu_docs_awk_file == "0"`
 #   hook_config (string with array) arguments that configure hook behavior
 #   args (string with array) arguments that configure wrapped tool behavior
 #   files (array) filenames to check
 #######################################################################
 function tofu_docs {
-  local -r tofu_docs_awk_file="$1"
-  local -r hook_config="$2"
-  local args="$3"
-  shift 3
+  local -r hook_config="$1"
+  local -r args="$2"
+  shift 2
   local -a -r files=("$@")
 
   local -a paths
@@ -224,22 +191,8 @@ function tofu_docs {
       fi
     fi
 
-    if [[ "$terraform_docs_awk_file" == "0" ]]; then
-      # shellcheck disable=SC2086
-      terraform-docs $tf_docs_formatter $args ./ > "$tmp_file"
-    else
-      # Can't append extension for mktemp, so renaming instead
-      local tmp_file_docs
-      tmp_file_docs=$(mktemp "${TMPDIR:-/tmp}/tofu-docs-XXXXXXXXXX")
-      mv "$tmp_file_docs" "$tmp_file_docs.tf"
-      local tmp_file_docs_tf
-      tmp_file_docs_tf="$tmp_file_docs.tf"
-
-      awk -f "$terraform_docs_awk_file" ./*.tf > "$tmp_file_docs_tf"
-      # shellcheck disable=SC2086
-      terraform-docs $tf_docs_formatter $args "$tmp_file_docs_tf" > "$tmp_file"
-      rm -f "$tmp_file_docs_tf"
-    fi
+    # shellcheck disable=SC2086
+    terraform-docs $tf_docs_formatter $args ./ > "$tmp_file"
 
     # Use of insertion markers to insert the terraform-docs output between the markers
     # Replace content between markers with the placeholder - https://stackoverflow.com/questions/1212799/how-do-i-extract-lines-between-two-line-delimiters-in-perl#1212834
@@ -256,171 +209,6 @@ function tofu_docs {
 
   # Cleanup
   rm -f "$config_file_no_color"
-}
-
-#######################################################################
-# Function which creates file with `awk` hacks for old versions of
-# `terraform-docs`
-# Arguments:
-#   output_file (string) filename where hack will be written to
-#######################################################################
-function tofu_docs_awk {
-  local -r output_file=$1
-
-  cat << "EOF" > "$output_file"
-# This script converts Terraform 0.12 variables/outputs to something suitable for `terraform-docs`
-# As of terraform-docs v0.6.0, HCL2 is not supported. This script is a *dirty hack* to get around it.
-# https://github.com/terraform-docs/terraform-docs/
-# https://github.com/terraform-docs/terraform-docs/issues/62
-# Script was originally found here: https://github.com/cloudposse/build-harness/blob/master/bin/terraform-docs.awk
-{
-  if ( $0 ~ /\{/ ) {
-    braceCnt++
-  }
-  if ( $0 ~ /\}/ ) {
-    braceCnt--
-  }
-  # ----------------------------------------------------------------------------------------------
-  # variable|output "..." {
-  # ----------------------------------------------------------------------------------------------
-  # [END] variable/output block
-  if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt == 0) {
-    if (braceCnt == 0 && blockCnt > 0) {
-      blockCnt--
-      print $0
-    }
-  }
-  # [START] variable or output block started
-  if ($0 ~ /^[[:space:]]*(variable|output)[[:space:]][[:space:]]*"(.*?)"/) {
-    # Normalize the braceCnt and block (should be 1 now)
-    braceCnt = 1
-    blockCnt = 1
-    # [CLOSE] "default" and "type" block
-    blockDefaultCnt = 0
-    blockTypeCnt = 0
-    # Print variable|output line
-    print $0
-  }
-  # ----------------------------------------------------------------------------------------------
-  # default = ...
-  # ----------------------------------------------------------------------------------------------
-  # [END] multiline "default" continues/ends
-  if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt > 0) {
-      print $0
-      # Count opening blocks
-      blockDefaultCnt += gsub(/\(/, "")
-      blockDefaultCnt += gsub(/\[/, "")
-      blockDefaultCnt += gsub(/\{/, "")
-      # Count closing blocks
-      blockDefaultCnt -= gsub(/\)/, "")
-      blockDefaultCnt -= gsub(/\]/, "")
-      blockDefaultCnt -= gsub(/\}/, "")
-  }
-  # [START] multiline "default" statement started
-  if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt == 0) {
-    if ($0 ~ /^[[:space:]][[:space:]]*(default)[[:space:]][[:space:]]*=/) {
-      if ($3 ~ "null") {
-        print "  default = \"null\""
-      } else {
-        print $0
-        # Count opening blocks
-        blockDefaultCnt += gsub(/\(/, "")
-        blockDefaultCnt += gsub(/\[/, "")
-        blockDefaultCnt += gsub(/\{/, "")
-        # Count closing blocks
-        blockDefaultCnt -= gsub(/\)/, "")
-        blockDefaultCnt -= gsub(/\]/, "")
-        blockDefaultCnt -= gsub(/\}/, "")
-      }
-    }
-  }
-  # ----------------------------------------------------------------------------------------------
-  # type  = ...
-  # ----------------------------------------------------------------------------------------------
-  # [END] multiline "type" continues/ends
-  if (blockCnt > 0 && blockTypeCnt > 0 && blockDefaultCnt == 0) {
-    # The following 'print $0' would print multiline type definitions
-    #print $0
-    # Count opening blocks
-    blockTypeCnt += gsub(/\(/, "")
-    blockTypeCnt += gsub(/\[/, "")
-    blockTypeCnt += gsub(/\{/, "")
-    # Count closing blocks
-    blockTypeCnt -= gsub(/\)/, "")
-    blockTypeCnt -= gsub(/\]/, "")
-    blockTypeCnt -= gsub(/\}/, "")
-  }
-  # [START] multiline "type" statement started
-  if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt == 0) {
-    if ($0 ~ /^[[:space:]][[:space:]]*(type)[[:space:]][[:space:]]*=/ ) {
-      if ($3 ~ "object") {
-        print "  type = \"object\""
-      } else {
-        # Convert multiline stuff into single line
-        if ($3 ~ /^[[:space:]]*list[[:space:]]*\([[:space:]]*$/) {
-          type = "list"
-        } else if ($3 ~ /^[[:space:]]*string[[:space:]]*\([[:space:]]*$/) {
-          type = "string"
-        } else if ($3 ~ /^[[:space:]]*map[[:space:]]*\([[:space:]]*$/) {
-          type = "map"
-        } else {
-          type = $3
-        }
-        # legacy quoted types: "string", "list", and "map"
-        if (type ~ /^[[:space:]]*"(.*?)"[[:space:]]*$/) {
-          print "  type = " type
-        } else {
-          print "  type = \"" type "\""
-        }
-      }
-      # Count opening blocks
-      blockTypeCnt += gsub(/\(/, "")
-      blockTypeCnt += gsub(/\[/, "")
-      blockTypeCnt += gsub(/\{/, "")
-      # Count closing blocks
-      blockTypeCnt -= gsub(/\)/, "")
-      blockTypeCnt -= gsub(/\]/, "")
-      blockTypeCnt -= gsub(/\}/, "")
-    }
-  }
-  # ----------------------------------------------------------------------------------------------
-  # description = ...
-  # ----------------------------------------------------------------------------------------------
-  # [PRINT] single line "description"
-  if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt == 0) {
-    if ($0 ~ /^[[:space:]][[:space:]]*description[[:space:]][[:space:]]*=/) {
-      print $0
-    }
-  }
-  # ----------------------------------------------------------------------------------------------
-  # value = ...
-  # ----------------------------------------------------------------------------------------------
-  ## [PRINT] single line "value"
-  #if (blockCnt > 0 && blockTypeCnt == 0 && blockDefaultCnt == 0) {
-  #  if ($0 ~ /^[[:space:]][[:space:]]*value[[:space:]][[:space:]]*=/) {
-  #    print $0
-  #  }
-  #}
-  # ----------------------------------------------------------------------------------------------
-  # Newlines, comments, everything else
-  # ----------------------------------------------------------------------------------------------
-  #if (blockTypeCnt == 0 && blockDefaultCnt == 0) {
-  # Comments with '#'
-  if ($0 ~ /^[[:space:]]*#/) {
-    print $0
-  }
-  # Comments with '//'
-  if ($0 ~ /^[[:space:]]*\/\//) {
-    print $0
-  }
-  # Newlines
-  if ($0 ~ /^[[:space:]]*$/) {
-    print $0
-  }
-  #}
-}
-EOF
-
 }
 
 [ "${BASH_SOURCE[0]}" != "$0" ] || main "$@"
