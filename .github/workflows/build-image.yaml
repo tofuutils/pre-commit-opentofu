@@ -82,8 +82,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            tofuutils/pre-commit-opentofu:${{ env.IMAGE_TAG }}
-            tofuutils/pre-commit-opentofu:latest
+            registry.hub.docker.com/tofuutils/pre-commit-opentofu:${{ env.IMAGE_TAG }}
+            registry.hub.docker.com/tofuutils/pre-commit-opentofu:latest
           provenance: false
 
       - name: Build and Push nightly to DockerHub
@@ -96,6 +96,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            tofuutils/pre-commit-opentofu:nightly
+            registry.hub.docker.com/tofuutils/pre-commit-opentofu:nightly
           provenance: false
 
