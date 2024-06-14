@@ -76,7 +76,7 @@ If you are using `pre-commit-opentofu` already or want to support its developmen
 
 ```bash
 TAG=latest
-docker pull ghcr.io/tofuutils/pre-commit-opentofu:$TAG
+docker pull tofuutils/pre-commit-opentofu:$TAG
 ```
 
 All available tags [here](https://github.com/tofuutils/pre-commit-opentofu/pkgs/container/pre-commit-opentofu/versions).
