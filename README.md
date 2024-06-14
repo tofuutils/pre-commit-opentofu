@@ -256,14 +256,14 @@ Or, using Docker ([available tags](https://github.com/tofuutils/pre-commit-opent
 
 ```bash
 TAG=latest
-docker run -e "USERID=$(id -u):$(id -g)" -v $(pwd):/lint -w /lint ghcr.io/tofuutils/pre-commit-opentofu:$TAG run -a
+docker run -e "USERID=$(id -u):$(id -g)" -v $(pwd):/lint -w /lint tofuutils/pre-commit-opentofu:$TAG run -a
 ```
 
 Execute this command to list the versions of the tools in Docker:
 
 ```bash
 TAG=latest
-docker run --rm --entrypoint cat ghcr.io/tofuutils/pre-commit-opentofu:$TAG /usr/bin/tools_versions_info
+docker run --rm --entrypoint cat tofuutils/pre-commit-opentofu:$TAG /usr/bin/tools_versions_info
 ```
 
 ## Available Hooks
@@ -997,7 +997,7 @@ The [recommended command](#4-run) to run the Docker container is:
 
 ```bash
 TAG=latest
-docker run -e "USERID=$(id -u):$(id -g)" -v $(pwd):/lint -w /lint ghcr.io/tofuutils/pre-commit-opentofu:$TAG run -a
+docker run -e "USERID=$(id -u):$(id -g)" -v $(pwd):/lint -w /lint tofuutils/pre-commit-opentofu:$TAG run -a
 ```
 
 which uses your current session's user ID and group ID to set the variable in the run command.  Without this setting, you may find files and directories owned by `root` in your local repository.
@@ -1041,7 +1041,7 @@ Finally, you can execute `docker run` with an additional volume mount so that th
 # run pre-commit-opentofu with docker
 # adding volume for .netrc file
 # .netrc needs to be in /root/ dir
-docker run --rm -e "USERID=$(id -u):$(id -g)" -v ~/.netrc:/root/.netrc -v $(pwd):/lint -w /lint ghcr.io/tofuutils/pre-commit-opentofu:latest run -a
+docker run --rm -e "USERID=$(id -u):$(id -g)" -v ~/.netrc:/root/.netrc -v $(pwd):/lint -w /lint tofuutils/pre-commit-opentofu:latest run -a
 ```
 
 ## Authors
