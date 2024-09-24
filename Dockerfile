@@ -24,7 +24,7 @@ RUN [ ${PRE_COMMIT_VERSION} = "latest" ] && pip3 install --no-cache-dir pre-comm
 RUN curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
  && curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_SHA256SUMS \
  && [ $(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ') = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
- && unzip tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/bin/tofu \
+ && unzip tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/bin/ \
  && rm "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" \
  && rm "tofu_${TOFU_VERSION}_SHA256SUMS"
 
