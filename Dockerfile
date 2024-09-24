@@ -20,7 +20,6 @@ ARG TOFU_VERSION=${TOFU_VERSION:-1.6.1}
 RUN [ ${PRE_COMMIT_VERSION} = "latest" ] && pip3 install --no-cache-dir pre-commit \
     || pip3 install --no-cache-dir pre-commit==${PRE_COMMIT_VERSION}
 
-
 RUN curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
  && curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_SHA256SUMS \
  && [ $(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ') = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
