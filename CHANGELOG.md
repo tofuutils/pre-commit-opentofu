@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.0.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v1.0.4...v2.0.0) (2024-09-25)
+
+
+### Features
+
+* **tofu:** add handling for missing tofu binary in Docker image  This commit introduces logic to gracefully handle the case when the tofu binary is not found in the Docker image, improving the overall user experience.  BREAKING CHANGE: The previous behavior of the application when the tofu binary was missing may have caused unexpected crashes. ([14fc63e](https://github.com/tofuutils/pre-commit-opentofu/commit/14fc63eb5b04e3ad1525d06e437b15935841775f))
+
+
+### BREAKING CHANGES
+
+* **tofu:** The previous behavior of the application when the tofu binary was missing may have caused unexpected crashes."
+
 ## [1.0.4](https://github.com/tofuutils/pre-commit-opentofu/compare/v1.0.3...v1.0.4) (2024-09-21)
 
 
