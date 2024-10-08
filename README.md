@@ -552,9 +552,9 @@ To replicate functionality in `tofu_docs` hook:
         - --args=--config=.terraform-docs.yml
     ```
 
-### terraftofu_fmtorm_fmt
+### tofu_fmt
 
-1. `tofu_fmt` supports custom arguments so you can pass [supported flags](https://www.terraform.io/docs/cli/commands/fmt.html#usage). Eg:
+1. `tofu_fmt` supports custom arguments so you can pass [supported flags](https://opentofu.org/docs/cli/commands/fmt/#usage). Eg:
 
     ```yaml
      - id: tofu_fmt
