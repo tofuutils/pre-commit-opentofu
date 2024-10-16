@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.1.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.0.0...v2.1.0) (2024-10-16)
+
+
+### Features
+
+* spport .tofu files ([#6](https://github.com/tofuutils/pre-commit-opentofu/issues/6)) ([e059c58](https://github.com/tofuutils/pre-commit-opentofu/commit/e059c5859bceddf1ca018f55851f6940ad51f1c2))
+
 # [2.0.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v1.0.4...v2.0.0) (2024-09-25)
 
 
