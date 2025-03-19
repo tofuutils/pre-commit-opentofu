@@ -14,7 +14,7 @@ RUN apk add --no-cache \
         setuptools
 
 ARG PRE_COMMIT_VERSION=${PRE_COMMIT_VERSION:-latest}
-ARG TOFU_VERSION=${TOFU_VERSION:-1.6.1}
+ARG TOFU_VERSION=${TOFU_VERSION:-1.9.0}
 
 # Install pre-commit
 RUN [ ${PRE_COMMIT_VERSION} = "latest" ] && pip3 install --no-cache-dir pre-commit \
