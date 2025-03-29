@@ -10,8 +10,8 @@ RUN apk add --no-cache \
     curl=~8 && \
     # Upgrade packages for be able get latest Checkov
     python3 -m pip install --no-cache-dir --upgrade \
-        pip \
-        setuptools
+    pip \
+    setuptools
 
 ARG PRE_COMMIT_VERSION=${PRE_COMMIT_VERSION:-latest}
 ARG TOFU_VERSION=${TOFU_VERSION:-1.9.0}
@@ -21,11 +21,11 @@ RUN [ ${PRE_COMMIT_VERSION} = "latest" ] && pip3 install --no-cache-dir pre-comm
     || pip3 install --no-cache-dir pre-commit==${PRE_COMMIT_VERSION}
 
 RUN curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
- && curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_SHA256SUMS \
- && [ $(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ') = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
- && unzip tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/bin/ \
- && rm "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" \
- && rm "tofu_${TOFU_VERSION}_SHA256SUMS"
+    && curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_SHA256SUMS \
+    && [ $(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ') = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
+    && unzip tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/bin/ \
+    && rm "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" \
+    && rm "tofu_${TOFU_VERSION}_SHA256SUMS"
 
 #
 # Install tools
@@ -47,18 +47,18 @@ ARG HCLEDIT_VERSION=${HCLEDIT_VERSION:-false}
 # specified in step below
 ARG INSTALL_ALL=${INSTALL_ALL:-false}
 RUN if [ "$INSTALL_ALL" != "false" ]; then \
-        echo "export CHECKOV_VERSION=latest" >> /.env && \
-        echo "export INFRACOST_VERSION=latest" >> /.env && \
-        echo "export TERRAFORM_DOCS_VERSION=latest" >> /.env && \
-        echo "export TERRAGRUNT_VERSION=latest" >> /.env && \
-        echo "export TERRASCAN_VERSION=latest" >> /.env && \
-        echo "export TFLINT_VERSION=latest" >> /.env && \
-        echo "export TFSEC_VERSION=latest" >> /.env && \
-        echo "export TRIVY_VERSION=latest" >> /.env && \
-        echo "export TFUPDATE_VERSION=latest" >> /.env && \
-        echo "export HCLEDIT_VERSION=latest" >> /.env \
+    echo "export CHECKOV_VERSION=latest" >> /.env && \
+    echo "export INFRACOST_VERSION=latest" >> /.env && \
+    echo "export TERRAFORM_DOCS_VERSION=latest" >> /.env && \
+    echo "export TERRAGRUNT_VERSION=latest" >> /.env && \
+    echo "export TERRASCAN_VERSION=latest" >> /.env && \
+    echo "export TFLINT_VERSION=latest" >> /.env && \
+    echo "export TFSEC_VERSION=latest" >> /.env && \
+    echo "export TRIVY_VERSION=latest" >> /.env && \
+    echo "export TFUPDATE_VERSION=latest" >> /.env && \
+    echo "export HCLEDIT_VERSION=latest" >> /.env \
     ; else \
-        touch /.env \
+    touch /.env \
     ; fi
 
 
@@ -66,10 +66,10 @@ RUN if [ "$INSTALL_ALL" != "false" ]; then \
 RUN . /.env && \
     if [ "$CHECKOV_VERSION" != "false" ]; then \
     ( \
-        apk add --no-cache gcc=~12 libffi-dev=~3 musl-dev=~1; \
-        [ "$CHECKOV_VERSION" = "latest" ] && pip3 install --no-cache-dir checkov \
-        || pip3 install --no-cache-dir checkov==${CHECKOV_VERSION}; \
-        apk del gcc libffi-dev musl-dev \
+    apk add --no-cache gcc=~12 libffi-dev=~3 musl-dev=~1; \
+    [ "$CHECKOV_VERSION" = "latest" ] && pip3 install --no-cache-dir checkov \
+    || pip3 install --no-cache-dir checkov==${CHECKOV_VERSION}; \
+    apk del gcc libffi-dev musl-dev \
     ) \
     ; fi
 
@@ -77,9 +77,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$INFRACOST_VERSION" != "false" ]; then \
     ( \
-        INFRACOST_RELEASES="https://api.github.com/repos/infracost/infracost/releases" && \
-        [ "$INFRACOST_VERSION" = "latest" ] && curl -L "$(curl -s ${INFRACOST_RELEASES}/latest | grep -o -E -m 1 "https://.+?-${TARGETOS}-${TARGETARCH}.tar.gz")" > infracost.tgz \
-        || curl -L "$(curl -s ${INFRACOST_RELEASES} | grep -o -E "https://.+?v${INFRACOST_VERSION}/infracost-${TARGETOS}-${TARGETARCH}.tar.gz")" > infracost.tgz \
+    INFRACOST_RELEASES="https://api.github.com/repos/infracost/infracost/releases" && \
+    [ "$INFRACOST_VERSION" = "latest" ] && curl -L "$(curl -s ${INFRACOST_RELEASES}/latest | grep -o -E -m 1 "https://.+?-${TARGETOS}-${TARGETARCH}.tar.gz")" > infracost.tgz \
+    || curl -L "$(curl -s ${INFRACOST_RELEASES} | grep -o -E "https://.+?v${INFRACOST_VERSION}/infracost-${TARGETOS}-${TARGETARCH}.tar.gz")" > infracost.tgz \
     ) && tar -xzf infracost.tgz && rm infracost.tgz && mv infracost-${TARGETOS}-${TARGETARCH} infracost \
     ; fi
 
@@ -87,9 +87,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$TERRAFORM_DOCS_VERSION" != "false" ]; then \
     ( \
-        TERRAFORM_DOCS_RELEASES="https://api.github.com/repos/terraform-docs/terraform-docs/releases" && \
-        [ "$TERRAFORM_DOCS_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRAFORM_DOCS_RELEASES}/latest | grep -o -E -m 1 "https://.+?-${TARGETOS}-${TARGETARCH}.tar.gz")" > terraform-docs.tgz \
-        || curl -L "$(curl -s ${TERRAFORM_DOCS_RELEASES} | grep -o -E "https://.+?v${TERRAFORM_DOCS_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz")" > terraform-docs.tgz \
+    TERRAFORM_DOCS_RELEASES="https://api.github.com/repos/terraform-docs/terraform-docs/releases" && \
+    [ "$TERRAFORM_DOCS_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRAFORM_DOCS_RELEASES}/latest | grep -o -E -m 1 "https://.+?-${TARGETOS}-${TARGETARCH}.tar.gz")" > terraform-docs.tgz \
+    || curl -L "$(curl -s ${TERRAFORM_DOCS_RELEASES} | grep -o -E "https://.+?v${TERRAFORM_DOCS_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz")" > terraform-docs.tgz \
     ) && tar -xzf terraform-docs.tgz terraform-docs && rm terraform-docs.tgz && chmod +x terraform-docs \
     ; fi
 
@@ -97,9 +97,9 @@ RUN . /.env && \
 RUN . /.env \
     && if [ "$TERRAGRUNT_VERSION" != "false" ]; then \
     ( \
-        TERRAGRUNT_RELEASES="https://api.github.com/repos/gruntwork-io/terragrunt/releases" && \
-        [ "$TERRAGRUNT_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRAGRUNT_RELEASES}/latest | grep -o -E -m 1 "https://.+?/terragrunt_${TARGETOS}_${TARGETARCH}")" > terragrunt \
-        || curl -L "$(curl -s ${TERRAGRUNT_RELEASES} | grep -o -E -m 1 "https://.+?v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH}")" > terragrunt \
+    TERRAGRUNT_RELEASES="https://api.github.com/repos/gruntwork-io/terragrunt/releases" && \
+    [ "$TERRAGRUNT_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRAGRUNT_RELEASES}/latest | grep -o -E -m 1 "https://.+?/terragrunt_${TARGETOS}_${TARGETARCH}")" > terragrunt \
+    || curl -L "$(curl -s ${TERRAGRUNT_RELEASES} | grep -o -E -m 1 "https://.+?v${TERRAGRUNT_VERSION}/terragrunt_${TARGETOS}_${TARGETARCH}")" > terragrunt \
     ) && chmod +x terragrunt \
     ; fi
 
@@ -111,9 +111,9 @@ RUN . /.env && \
     # Convert the first letter to Uppercase
     OS="$(echo ${TARGETOS} | cut -c1 | tr '[:lower:]' '[:upper:]' | xargs echo -n; echo ${TARGETOS} | cut -c2-)"; \
     ( \
-        TERRASCAN_RELEASES="https://api.github.com/repos/tenable/terrascan/releases" && \
-        [ "$TERRASCAN_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRASCAN_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${OS}_${ARCH}.tar.gz")" > terrascan.tar.gz \
-        || curl -L "$(curl -s ${TERRASCAN_RELEASES} | grep -o -E "https://.+?${TERRASCAN_VERSION}_${OS}_${ARCH}.tar.gz")" > terrascan.tar.gz \
+    TERRASCAN_RELEASES="https://api.github.com/repos/tenable/terrascan/releases" && \
+    [ "$TERRASCAN_VERSION" = "latest" ] && curl -L "$(curl -s ${TERRASCAN_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${OS}_${ARCH}.tar.gz")" > terrascan.tar.gz \
+    || curl -L "$(curl -s ${TERRASCAN_RELEASES} | grep -o -E "https://.+?${TERRASCAN_VERSION}_${OS}_${ARCH}.tar.gz")" > terrascan.tar.gz \
     ) && tar -xzf terrascan.tar.gz terrascan && rm terrascan.tar.gz && \
     ./terrascan init \
     ; fi
@@ -122,9 +122,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$TFLINT_VERSION" != "false" ]; then \
     ( \
-        TFLINT_RELEASES="https://api.github.com/repos/terraform-linters/tflint/releases" && \
-        [ "$TFLINT_VERSION" = "latest" ] && curl -L "$(curl -s ${TFLINT_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.zip")" > tflint.zip \
-        || curl -L "$(curl -s ${TFLINT_RELEASES} | grep -o -E "https://.+?/v${TFLINT_VERSION}/tflint_${TARGETOS}_${TARGETARCH}.zip")" > tflint.zip \
+    TFLINT_RELEASES="https://api.github.com/repos/terraform-linters/tflint/releases" && \
+    [ "$TFLINT_VERSION" = "latest" ] && curl -L "$(curl -s ${TFLINT_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.zip")" > tflint.zip \
+    || curl -L "$(curl -s ${TFLINT_RELEASES} | grep -o -E "https://.+?/v${TFLINT_VERSION}/tflint_${TARGETOS}_${TARGETARCH}.zip")" > tflint.zip \
     ) && unzip tflint.zip && rm tflint.zip \
     ; fi
 
@@ -132,9 +132,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$TFSEC_VERSION" != "false" ]; then \
     ( \
-        TFSEC_RELEASES="https://api.github.com/repos/aquasecurity/tfsec/releases" && \
-        [ "$TFSEC_VERSION" = "latest" ] && curl -L "$(curl -s ${TFSEC_RELEASES}/latest | grep -o -E -m 1 "https://.+?/tfsec-${TARGETOS}-${TARGETARCH}")" > tfsec \
-        || curl -L "$(curl -s ${TFSEC_RELEASES} | grep -o -E -m 1 "https://.+?v${TFSEC_VERSION}/tfsec-${TARGETOS}-${TARGETARCH}")" > tfsec \
+    TFSEC_RELEASES="https://api.github.com/repos/aquasecurity/tfsec/releases" && \
+    [ "$TFSEC_VERSION" = "latest" ] && curl -L "$(curl -s ${TFSEC_RELEASES}/latest | grep -o -E -m 1 "https://.+?/tfsec-${TARGETOS}-${TARGETARCH}")" > tfsec \
+    || curl -L "$(curl -s ${TFSEC_RELEASES} | grep -o -E -m 1 "https://.+?v${TFSEC_VERSION}/tfsec-${TARGETOS}-${TARGETARCH}")" > tfsec \
     ) && chmod +x tfsec \
     ; fi
 
@@ -143,9 +143,9 @@ RUN . /.env && \
     if [ "$TRIVY_VERSION" != "false" ]; then \
     if [ "$TARGETARCH" != "amd64" ]; then ARCH="$TARGETARCH"; else ARCH="64bit"; fi; \
     ( \
-        TRIVY_RELEASES="https://api.github.com/repos/aquasecurity/trivy/releases" && \
-        [ "$TRIVY_VERSION" = "latest" ] && curl -L "$(curl -s ${TRIVY_RELEASES}/latest | grep -o -E -i -m 1 "https://.+?/trivy_.+?_${TARGETOS}-${ARCH}.tar.gz")" > trivy.tar.gz \
-        || curl -L "$(curl -s ${TRIVY_RELEASES} | grep -o -E -i -m 1 "https://.+?/v${TRIVY_VERSION}/trivy_.+?_${TARGETOS}-${ARCH}.tar.gz")" > trivy.tar.gz \
+    TRIVY_RELEASES="https://api.github.com/repos/aquasecurity/trivy/releases" && \
+    [ "$TRIVY_VERSION" = "latest" ] && curl -L "$(curl -s ${TRIVY_RELEASES}/latest | grep -o -E -i -m 1 "https://.+?/trivy_.+?_${TARGETOS}-${ARCH}.tar.gz")" > trivy.tar.gz \
+    || curl -L "$(curl -s ${TRIVY_RELEASES} | grep -o -E -i -m 1 "https://.+?/v${TRIVY_VERSION}/trivy_.+?_${TARGETOS}-${ARCH}.tar.gz")" > trivy.tar.gz \
     ) && tar -xzf trivy.tar.gz trivy && rm trivy.tar.gz \
     ; fi
 
@@ -153,9 +153,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$TFUPDATE_VERSION" != "false" ]; then \
     ( \
-        TFUPDATE_RELEASES="https://api.github.com/repos/minamijoyo/tfupdate/releases" && \
-        [ "$TFUPDATE_VERSION" = "latest" ] && curl -L "$(curl -s ${TFUPDATE_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.tar.gz")" > tfupdate.tgz \
-        || curl -L "$(curl -s ${TFUPDATE_RELEASES} | grep -o -E -m 1 "https://.+?${TFUPDATE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz")" > tfupdate.tgz \
+    TFUPDATE_RELEASES="https://api.github.com/repos/minamijoyo/tfupdate/releases" && \
+    [ "$TFUPDATE_VERSION" = "latest" ] && curl -L "$(curl -s ${TFUPDATE_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.tar.gz")" > tfupdate.tgz \
+    || curl -L "$(curl -s ${TFUPDATE_RELEASES} | grep -o -E -m 1 "https://.+?${TFUPDATE_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz")" > tfupdate.tgz \
     ) && tar -xzf tfupdate.tgz tfupdate && rm tfupdate.tgz \
     ; fi
 
@@ -163,9 +163,9 @@ RUN . /.env && \
 RUN . /.env && \
     if [ "$HCLEDIT_VERSION" != "false" ]; then \
     ( \
-        HCLEDIT_RELEASES="https://api.github.com/repos/minamijoyo/hcledit/releases" && \
-        [ "$HCLEDIT_VERSION" = "latest" ] && curl -L "$(curl -s ${HCLEDIT_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.tar.gz")" > hcledit.tgz \
-        || curl -L "$(curl -s ${HCLEDIT_RELEASES} | grep -o -E -m 1 "https://.+?${HCLEDIT_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz")" > hcledit.tgz \
+    HCLEDIT_RELEASES="https://api.github.com/repos/minamijoyo/hcledit/releases" && \
+    [ "$HCLEDIT_VERSION" = "latest" ] && curl -L "$(curl -s ${HCLEDIT_RELEASES}/latest | grep -o -E -m 1 "https://.+?_${TARGETOS}_${TARGETARCH}.tar.gz")" > hcledit.tgz \
+    || curl -L "$(curl -s ${HCLEDIT_RELEASES} | grep -o -E -m 1 "https://.+?${HCLEDIT_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz")" > hcledit.tgz \
     ) && tar -xzf hcledit.tgz hcledit && rm hcledit.tgz \
     ; fi
 
@@ -210,7 +210,7 @@ COPY --from=builder \
     /bin_dir/ \
     /usr/bin/tofu \
     /usr/local/bin/checkov* \
-        /usr/bin/
+    /usr/bin/
 # Copy pre-commit packages
 COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
 # Copy terrascan policies
@@ -218,10 +218,10 @@ COPY --from=builder /root/ /root/
 
 # Install hooks extra deps
 RUN if [ "$(grep -o '^terraform-docs SKIPPED$' /usr/bin/tools_versions_info)" = "" ]; then \
-        apk add --no-cache perl=~5 \
+    apk add --no-cache perl=~5 \
     ; fi && \
     if [ "$(grep -o '^infracost SKIPPED$' /usr/bin/tools_versions_info)" = "" ]; then \
-        apk add --no-cache jq=~1 \
+    apk add --no-cache jq=~1 \
     ; fi && \
     # Fix git runtime fatal:
     # unsafe repository ('/lint' is owned by someone else)
@@ -235,3 +235,4 @@ ENV INFRACOST_API_KEY=${INFRACOST_API_KEY:-}
 ENV INFRACOST_SKIP_UPDATE_CHECK=${INFRACOST_SKIP_UPDATE_CHECK:-false}
 
 ENTRYPOINT [ "/entrypoint.sh" ]
+
