@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.2.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.1.0...v2.2.0) (2025-03-29)
+
+
+### Features
+
+* make release ([e625db1](https://github.com/tofuutils/pre-commit-opentofu/commit/e625db13ec285e132f43cdf6e5aa3f3272e45451))
+
 # [2.1.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.0.0...v2.1.0) (2024-10-16)
 
 
