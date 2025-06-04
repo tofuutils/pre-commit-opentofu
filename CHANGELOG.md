@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.1](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.0...v2.2.1) (2025-06-04)
+
+
+### Bug Fixes
+
+* make infracost_breakdown.sh compatible with bash 3.2 (macOS) ([df886fa](https://github.com/tofuutils/pre-commit-opentofu/commit/df886fa772e7d1eedf5603327c0cf02968e7d779))
+* Update pre-commit/action version ([#30](https://github.com/tofuutils/pre-commit-opentofu/issues/30)) ([44c7b5d](https://github.com/tofuutils/pre-commit-opentofu/commit/44c7b5dec9362d2fe7ed5e8786f4d95956791d3d))
+
 # [2.2.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.1.0...v2.2.0) (2025-03-29)
 
 
