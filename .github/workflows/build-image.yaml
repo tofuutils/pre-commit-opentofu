@@ -34,7 +34,7 @@ jobs:
 
       - name: Build and Push release to ghcr.io
         if: github.event_name != 'schedule'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           build-args: |
@@ -51,7 +51,7 @@ jobs:
 
       - name: Build and Push nightly to ghcr.io
         if: github.event_name == 'schedule'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           build-args: |
@@ -74,7 +74,7 @@ jobs:
 
       - name: Build and Push release to DockerHub
         if: github.event_name != 'schedule'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           build-args: |
@@ -88,7 +88,7 @@ jobs:
 
       - name: Build and Push nightly to DockerHub
         if: github.event_name == 'schedule'
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           build-args: |
