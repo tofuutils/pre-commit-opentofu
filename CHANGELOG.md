@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.2](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.1...v2.2.2) (2025-10-22)
+
+
+### Bug Fixes
+
+* replace deprecated hclfmt with hcl format command ([f1a589b](https://github.com/tofuutils/pre-commit-opentofu/commit/f1a589bd124b277cc02fcbf04ee05017fb8822c0))
+
 ## [2.2.1](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.0...v2.2.1) (2025-06-04)
 
 
