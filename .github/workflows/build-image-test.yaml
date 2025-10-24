@@ -52,7 +52,7 @@ jobs:
 
       - name: Dive - check image for waste files
         if: steps.changed-files-specific.outputs.any_changed == 'true'
-        uses: MaxymVlasov/dive-action@fafb796951b322cc4926b8a5eafda89ab9de8edf # v1.5.1
+        uses: MaxymVlasov/dive-action@62dde811c401b3b342b69bd42b28e5042b79ef86 # v1.6.0
         with:
           image: ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }}
           config-file: ${{ github.workspace }}/.github/.dive-ci.yaml
