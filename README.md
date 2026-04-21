@@ -60,7 +60,7 @@ If you are using `pre-commit-opentofu` already or want to support its developmen
   </sup></sub></sup></sub></sup></sub></sup></sub></sup></sub></sup></sub></sup></sub></sup></sub></sup></sub><br><br>
 * [`checkov`](https://github.com/bridgecrewio/checkov) required for `tofu_checkov` hook.
 * [`terraform-docs`](https://github.com/terraform-docs/terraform-docs) required for `tofu_docs` hook.
-* [`terragrunt`](https://terragrunt.gruntwork.io/docs/getting-started/install/) required for `terragrunt_validate` hook.
+* [`terragrunt`](https://terragrunt.gruntwork.io/docs/getting-started/install/) required for `terragrunt_validate` and `terragrunt_validate_inputs` hooks.
 * [`terrascan`](https://github.com/tenable/terrascan) required for `terrascan` hook.
 * [`TFLint`](https://github.com/terraform-linters/tflint) required for `tofu_tflint` hook.
 * [`TFSec`](https://github.com/liamg/tfsec) required for `tofu_tfsec` hook.
@@ -266,6 +266,32 @@ TAG=latest
 docker run --rm --entrypoint cat tofuutils/pre-commit-opentofu:$TAG /usr/bin/tools_versions_info
 ```
 
+### Example: Terragrunt Input Validation
+
+Use `terragrunt_validate_inputs` to check that Terragrunt inputs line up with the module variables they are passed into:
+
+```yaml
+repos:
+- repo: https://github.com/tofuutils/pre-commit-opentofu
+  rev: <VERSION> # Get the latest from: https://github.com/tofuutils/pre-commit-opentofu/releases
+  hooks:
+    - id: terragrunt_fmt
+    - id: terragrunt_validate_inputs
+      args:
+        - --args=--terragrunt-strict-validate
+```
+
+> **Note**: This hook automatically uses `terragrunt validate-inputs` for older Terragrunt releases and `terragrunt hcl validate --inputs` for newer releases.
+>
+> If Terragrunt reports intermittent `.terragrunt-cache` download or `file exists` errors in your repository, run this hook serially in your consumer configuration:
+>
+> ```yaml
+>     - id: terragrunt_validate_inputs
+>       require_serial: true
+>       args:
+>         - --args=--terragrunt-strict-validate
+> ```
+
 ## Available Hooks
 
 There are several [pre-commit](https://pre-commit.com/) hooks to keep OpenTofu configurations (both `*.tf` and `*.tfvars`) and Terragrunt configurations (`*.hcl`) in a good shape:
@@ -286,6 +312,7 @@ There are several [pre-commit](https://pre-commit.com/) hooks to keep OpenTofu c
 | `tofu_validate`                                   | Validates all Terraform configuration files. [Hook notes](#tofu_validate)                                                                                                                                                               | `jq`, only for `--retry-once-with-cleanup` flag                                      |
 | `terragrunt_fmt`                                       | Reformat all [Terragrunt](https://github.com/gruntwork-io/terragrunt) configuration files (`*.hcl`) to a canonical format.                                                                                                                   | `terragrunt`                                                                         |
 | `terragrunt_validate`                                  | Validates all [Terragrunt](https://github.com/gruntwork-io/terragrunt) configuration files (`*.hcl`)                                                                                                                                         | `terragrunt`                                                                         |
+| `terragrunt_validate_inputs`                           | Validates Terragrunt unused and undefined inputs.                                                                                                                                                                                               | `terragrunt`                                                                         |
 | `tofu_wrapper_module_for_each`                    | Generates OpenTofu wrappers with `for_each` in module. [Hook notes](#terraform_wrapper_module_for_each)                                                                                                                                     | `hcledit`                                                                            |
 | `terrascan`                                            | [terrascan](https://github.com/tenable/terrascan) Detect compliance and security violations. [Hook notes](#terrascan)                                                                                                                        | `terrascan`                                                                          |
 | `tfupdate`                                             | [tfupdate](https://github.com/minamijoyo/tfupdate) Update version constraints of OpenTofu core, providers, and modules. [Hook notes](#tfupdate)                                                                                             | `tfupdate`                                                                           |
