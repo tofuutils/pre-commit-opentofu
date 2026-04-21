@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.3.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.2...v2.3.0) (2026-04-21)
+
+
+### Features
+
+* add terragrunt_validate_inputs hook ([0ca9eca](https://github.com/tofuutils/pre-commit-opentofu/commit/0ca9eca3823420f31d09c62bf1672bea03ca3e07))
+
 ## [2.2.2](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.1...v2.2.2) (2025-10-22)
 
 
