@@ -22,7 +22,7 @@ RUN [ ${PRE_COMMIT_VERSION} = "latest" ] && pip3 install --no-cache-dir pre-comm
 
 RUN curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
     && curl -LO https://github.com/opentofu/opentofu/releases/download/v${TOFU_VERSION}/tofu_${TOFU_VERSION}_SHA256SUMS \
-    && [ $(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ') = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
+    && [ "$(sha256sum "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" | cut -f 1 -d ' ')" = "$(grep "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" tofu_*_SHA256SUMS | cut -f 1 -d ' ')" ] \
     && unzip tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/bin/ \
     && rm "tofu_${TOFU_VERSION}_${TARGETOS}_${TARGETARCH}.zip" \
     && rm "tofu_${TOFU_VERSION}_SHA256SUMS"
@@ -235,4 +235,3 @@ ENV INFRACOST_API_KEY=${INFRACOST_API_KEY:-}
 ENV INFRACOST_SKIP_UPDATE_CHECK=${INFRACOST_SKIP_UPDATE_CHECK:-false}
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-

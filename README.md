@@ -294,7 +294,7 @@ repos:
 
 ## Available Hooks
 
-There are several [pre-commit](https://pre-commit.com/) hooks to keep OpenTofu configurations (both `*.tf` and `*.tfvars`) and Terragrunt configurations (`*.hcl`) in a good shape:
+There are several [pre-commit](https://pre-commit.com/) hooks to keep OpenTofu configurations (`*.tf`, `*.tofu`, and `*.tfvars`) and Terragrunt configurations (`*.hcl`) in a good shape:
 
 <!-- markdownlint-disable no-inline-html -->
 | Hook name                                              | Description                                                                                                                                                                                                                                  | Dependencies<br><sup>[Install instructions here](#1-install-dependencies)</sup>      |
@@ -325,6 +325,8 @@ Check the [source file](https://github.com/tofuutils/pre-commit-opentofu/blob/ma
 ### Known limitations
 
 OpenTofu operates on a per-dir basis, while `pre-commit` framework only supports files and files that exist. This means if you only remove the TF-related file without any other changes in the same dir, checks will be skipped. Example and details [here](https://github.com/pre-commit/pre-commit/issues/3048).
+
+Hooks match `*.tofu` files where OpenTofu configuration files are supported, but some wrapped third-party tools may lag behind OpenTofu's native `*.tofu` parsing. If a hook runs `terraform-docs`, `tflint`, `tfsec`, `trivy`, `checkov`, `infracost`, or `tfupdate`, make sure the installed tool version supports the file extensions used in your repository.
 
 ### All hooks: Usage of environment variables in `--args`
 
@@ -930,7 +932,7 @@ To replicate functionality in `tofu_docs` hook:
             require_serial: true
             entry: .generate-providers.sh
             language: script
-            files: \.tf(vars)?$
+            files: \.(tf|tofu|tfvars)$
             pass_filenames: false
 
      - repo: https://github.com/pre-commit/pre-commit-hooks
