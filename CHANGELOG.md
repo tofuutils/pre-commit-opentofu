@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+# [2.4.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.3.0...v2.4.0) (2026-05-25)
+
+
+### Bug Fixes
+
+* expand file extension patterns for tofu hooks ([451aaa5](https://github.com/tofuutils/pre-commit-opentofu/commit/451aaa59b552eb3913629c835af8b6b568aab120))
+
+
+### Features
+
+* support .tofu file extension and update hooks/tools ([9624cc8](https://github.com/tofuutils/pre-commit-opentofu/commit/9624cc8f24177378449203194b4f0ee71bc6c1a0))
+
 # [2.3.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.2.2...v2.3.0) (2026-04-21)
 
 
