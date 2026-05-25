@@ -315,7 +315,7 @@ EOF
     all_tf_content=$(find "${full_module_dir}" -regex '.*\.(tf|tofu)' -maxdepth 1 -type f -exec cat {} +)
 
     if [[ ! $all_tf_content ]]; then
-      common::colorify "yellow" "Skipping ${full_module_dir} because there are no *.(tf|tofu) files."
+      common::colorify "yellow" "Skipping ${full_module_dir} because there are no .tf or .tofu files."
       continue
     fi
 
