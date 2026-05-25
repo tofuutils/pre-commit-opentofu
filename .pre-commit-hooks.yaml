@@ -4,7 +4,7 @@
   entry: hooks/infracost_breakdown.sh
   language: script
   require_serial: true
-  files: \.((tf|tofu)(vars)?|hcl)$
+  files: \.(tf|tofu|tfvars|hcl)$
   exclude: \.terraform\/.*$
 
 - id: tofu_fmt
@@ -12,7 +12,7 @@
   description: Rewrites all OpenTofu configuration files to a canonical format.
   entry: hooks/tofu_fmt.sh
   language: script
-  files: \.(tf|tofu)(vars)?$
+  files: \.(tf|tofu|tfvars|(tftest|tofutest|tfmock|tfquery)\.hcl)$
   exclude: \.terraform\/.*$
 
 - id: tofu_docs
@@ -23,7 +23,7 @@
   require_serial: true
   entry: hooks/tofu_docs.sh
   language: script
-  files: (\.(tf|tofu)|\.terraform\.lock\.hcl)$
+  files: \.(tf|tofu|terraform\.lock\.hcl)$
   exclude: \.terraform\/.*$
 
 - id: tofu_docs_without_aggregate_type_defaults
@@ -52,7 +52,7 @@
   require_serial: true
   entry: hooks/tofu_validate.sh
   language: script
-  files: \.(tf|tofu)(vars)?$
+  files: \.(tf|tofu|tfvars|terraform\.lock\.hcl)$
   exclude: \.terraform\/.*$
 
 - id: tofu_providers_lock
@@ -70,7 +70,7 @@
   require_serial: true
   entry: hooks/tofu_tflint.sh
   language: script
-  files: \.(tf|tofu)(vars)?$
+  files: \.(tf|tofu|tfvars)$
   exclude: \.terraform\/.*$
 
 - id: terragrunt_fmt
@@ -104,7 +104,7 @@
     Static analysis of OpenTofu templates to spot potential security issues.
   require_serial: true
   entry: hooks/tofu_tfsec.sh
-  files: \.(tf|tofu)(vars)?$
+  files: \.(tf|tofu|tfvars)$
   language: script
 
 - id: tofu_trivy
@@ -113,7 +113,7 @@
     Static analysis of OpenTofu templates to spot potential security issues.
   require_serial: true
   entry: hooks/tofu_trivy.sh
-  files: \.(tf|tofu)(vars)?$
+  files: \.(tf|tofu|tfvars)$
   language: script
 
 - id: checkov
@@ -123,7 +123,7 @@
   language: python
   pass_filenames: false
   always_run: false
-  files: \.tf$
+  files: \.(tf|tofu)$
   exclude: \.terraform\/.*$
   require_serial: true
 
@@ -145,7 +145,7 @@
   pass_filenames: false
   always_run: false
   require_serial: true
-  files: \.tf$
+  files: \.(tf|tofu)$
   exclude: \.terraform\/.*$
 
 - id: terrascan

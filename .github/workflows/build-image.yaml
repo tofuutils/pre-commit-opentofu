@@ -98,4 +98,3 @@ jobs:
           tags: |
             registry.hub.docker.com/tofuutils/pre-commit-opentofu:nightly
           provenance: false
-

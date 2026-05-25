@@ -32,8 +32,8 @@ function normalize_validate_args_for_modern_terragrunt {
 
   for arg_idx in "${!ARGS[@]}"; do
     case "${ARGS[$arg_idx]}" in
-      --terragrunt-strict-validate|--strict-validate)
-        ARGS[$arg_idx]="--strict"
+      --terragrunt-strict-validate | --strict-validate)
+        ARGS[arg_idx]="--strict"
         ;;
     esac
   done
@@ -45,7 +45,7 @@ function terragrunt_version_ge_0_78 {
   local major
   local minor
 
-  version_raw=$(terragrunt --version 2>/dev/null || true)
+  version_raw=$(terragrunt --version 2> /dev/null || true)
   version=$(echo "$version_raw" | sed -E 's/.*v?([0-9]+)\.([0-9]+)\.([0-9]+).*/\1.\2.\3/')
 
   if [[ ! $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
@@ -109,8 +109,8 @@ function legacy_unit_dirs_from_files {
   if common::is_hook_run_on_whole_repo "$HOOK_ID" "${FILES[@]}"; then
     find . -type f -name terragrunt.hcl \
       -not -path '*/.terragrunt-cache/*' \
-      -not -path '*/.terraform/*' \
-      | sort -u | while read -r unit_file; do
+      -not -path '*/.terraform/*' |
+      sort -u | while read -r unit_file; do
       dirname "$unit_file"
     done
     return
@@ -137,8 +137,8 @@ function legacy_unit_dirs_from_files {
   if [[ ${#unit_files[@]} -eq 0 ]]; then
     find . -type f -name terragrunt.hcl \
       -not -path '*/.terragrunt-cache/*' \
-      -not -path '*/.terraform/*' \
-      | sort -u | while read -r unit_file; do
+      -not -path '*/.terraform/*' |
+      sort -u | while read -r unit_file; do
       dirname "$unit_file"
     done
     return
