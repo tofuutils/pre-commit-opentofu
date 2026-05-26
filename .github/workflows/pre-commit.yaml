@@ -27,9 +27,13 @@ jobs:
         sudo apt update && sudo apt install shellcheck
 
     - name: Install hadolint
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
-        curl -L "$(curl -s https://api.github.com/repos/hadolint/hadolint/releases/latest | grep -o -E -m 1 "https://.+?/hadolint-Linux-x86_64")" > hadolint \
-        && chmod +x hadolint && sudo mv hadolint /usr/bin/
+        gh release download v2.14.0 --repo hadolint/hadolint --pattern "hadolint-linux-x86_64"
+        mv hadolint-linux-x86_64 hadolint
+        chmod +x hadolint
+        sudo mv hadolint /usr/bin/
     # Need to success pre-commit fix push
     - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       with:
