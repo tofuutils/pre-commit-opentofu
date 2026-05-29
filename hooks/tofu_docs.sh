@@ -69,6 +69,7 @@ function tofu_docs {
   local -a -r files=("$@")
 
   local -a paths
+  local config_file_no_color=""
 
   local index=0
   local file_with_path
