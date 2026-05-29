@@ -128,12 +128,18 @@ function per_dir_hook_unique_part {
 
   if [ "$retry_once_with_cleanup" != "true" ]; then
     # tofu validate only
-    validate_output=$(tofu validate "${args[@]}" 2>&1)
-    exit_code=$?
+    if validate_output=$(tofu validate "${args[@]}" 2>&1); then
+      exit_code=0
+    else
+      exit_code=$?
+    fi
   else
     # tofu validate, plus capture possible errors
-    validate_output=$(tofu validate -json "${args[@]}" 2>&1)
-    exit_code=$?
+    if validate_output=$(tofu validate -json "${args[@]}" 2>&1); then
+      exit_code=0
+    else
+      exit_code=$?
+    fi
 
     # Match specific validation errors
     local -i validate_errors_matched
@@ -155,8 +161,11 @@ function per_dir_hook_unique_part {
         return $exit_code
       }
 
-      validate_output=$(tofu validate "${args[@]}" 2>&1)
-      exit_code=$?
+      if validate_output=$(tofu validate "${args[@]}" 2>&1); then
+        exit_code=0
+      else
+        exit_code=$?
+      fi
     fi
   fi
 

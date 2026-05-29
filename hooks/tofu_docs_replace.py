@@ -36,13 +36,14 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     dirs = []
+    seen_dirs = set()
     for filename in args.filenames:
-        if os.path.realpath(filename) not in dirs and (
-            filename.endswith(".tf")
-            or filename.endswith(".tofu")
-            or filename.endswith(".tfvars")
-        ):
-            dirs.append(os.path.dirname(filename))
+        if filename.endswith((".tf", ".tofu", ".tfvars")):
+            dir_path = os.path.dirname(filename)
+            dir_key = os.path.realpath(dir_path)
+            if dir_key not in seen_dirs:
+                seen_dirs.add(dir_key)
+                dirs.append(dir_path)
 
     retval = 0
 
