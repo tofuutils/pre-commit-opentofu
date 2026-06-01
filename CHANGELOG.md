@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.1](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.4.0...v2.4.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* initialize config_file_no_color variable ([b766f82](https://github.com/tofuutils/pre-commit-opentofu/commit/b766f82b087793f75b3ffa61eb22da80031455ce))
+* typo fixes ([3f263a9](https://github.com/tofuutils/pre-commit-opentofu/commit/3f263a968cd776924c3d1f4981e0fbf1cd79ff4d))
+* Update hadolint installation ([c9cd4a8](https://github.com/tofuutils/pre-commit-opentofu/commit/c9cd4a805d378516a24dac33278fa51deb98bf2e))
+
 # [2.4.0](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.3.0...v2.4.0) (2026-05-25)
 
 
