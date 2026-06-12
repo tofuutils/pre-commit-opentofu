@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.2](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.4.1...v2.4.2) (2026-06-12)
+
+
+### Bug Fixes
+
+* **hooks:** make env var regex portable ([caab3b8](https://github.com/tofuutils/pre-commit-opentofu/commit/caab3b8701405a446489a7864f91a2c9f281eee0))
+
 ## [2.4.1](https://github.com/tofuutils/pre-commit-opentofu/compare/v2.4.0...v2.4.1) (2026-06-01)
 
 
